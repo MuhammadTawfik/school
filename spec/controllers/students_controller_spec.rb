@@ -37,7 +37,7 @@ RSpec.describe StudentsController, type: :controller do
   describe "GET #index" do
     it "assigns all students as @students" do
       student = Student.create! valid_attributes
-      get :index
+      get :index, params: {class_room_id: class_room.id}
       expect(assigns(:students)).to eq([student])
     end
   end
@@ -45,14 +45,14 @@ RSpec.describe StudentsController, type: :controller do
   describe "GET #show" do
     it "assigns the requested student as @student" do
       student = Student.create! valid_attributes
-      get :show, params: {id: student.to_param}
+      get :show, params: {id: student.to_param, class_room_id: class_room.id}
       expect(assigns(:student)).to eq(student)
     end
   end
 
   describe "GET #new" do
     it "assigns a new student as @student" do
-      get :new
+      get :new, params: {class_room_id: class_room.id}
       expect(assigns(:student)).to be_a_new(Student)
     end
   end
@@ -60,7 +60,7 @@ RSpec.describe StudentsController, type: :controller do
   describe "GET #edit" do
     it "assigns the requested student as @student" do
       student = Student.create! valid_attributes
-      get :edit, params: {id: student.to_param}
+      get :edit, params: {id: student.to_param, class_room_id: class_room.id}
       expect(assigns(:student)).to eq(student)
     end
   end
@@ -69,30 +69,30 @@ RSpec.describe StudentsController, type: :controller do
     context "with valid params" do
       it "creates a new Student" do
         expect {
-          post :create, params: {student: valid_attributes}
+          post :create, params: {student: valid_attributes, class_room_id: class_room.id}
         }.to change(Student, :count).by(1)
       end
 
       it "assigns a newly created student as @student" do
-        post :create, params: {student: valid_attributes}
+        post :create, params: {student: valid_attributes, class_room_id: class_room.id}
         expect(assigns(:student)).to be_a(Student)
         expect(assigns(:student)).to be_persisted
       end
 
       it "redirects to the created student" do
-        post :create, params: {student: valid_attributes}
-        expect(response).to redirect_to(Student.last)
+        post :create, params: {student: valid_attributes, class_room_id: class_room.id}
+        expect(response).to redirect_to(class_room_student_url(class_room,Student.last))
       end
     end
 
     context "with invalid params" do
       it "assigns a newly created but unsaved student as @student" do
-        post :create, params: {student: invalid_attributes}
+        post :create, params: {student: invalid_attributes, class_room_id: class_room.id}
         expect(assigns(:student)).to be_a_new(Student)
       end
 
       it "re-renders the 'new' template" do
-        post :create, params: {student: invalid_attributes}
+        post :create, params: {student: invalid_attributes, class_room_id: class_room.id}
         expect(response).to render_template("new")
       end
     end
@@ -105,52 +105,38 @@ RSpec.describe StudentsController, type: :controller do
 
       it "updates the requested student" do
         student = Student.create! valid_attributes
-        put :update, params: {id: student.to_param, student: new_attributes}
+        put :update, params: {id: student.to_param, student: new_attributes, class_room_id: class_room.id}
         student.reload
         expect(assigns(:student)[:name]).to eq(new_attributes[:name])
       end
 
       it "assigns the requested student as @student" do
         student = Student.create! valid_attributes
-        put :update, params: {id: student.to_param, student: valid_attributes}
+        put :update, params: {id: student.to_param, student: valid_attributes, class_room_id: class_room.id}
         expect(assigns(:student)).to eq(student)
       end
 
       it "redirects to the student" do
         student = Student.create! valid_attributes
-        put :update, params: {id: student.to_param, student: valid_attributes}
-        expect(response).to redirect_to(student)
+        put :update, params: {id: student.to_param, student: valid_attributes, class_room_id: class_room.id}
+        expect(response).to redirect_to(class_room_student_url(class_room,student))
       end
     end
 
     context "with invalid params" do
       it "assigns the student as @student" do
         student = Student.create! valid_attributes
-        put :update, params: {id: student.to_param, student: invalid_attributes}
+        put :update, params: {id: student.to_param, student: invalid_attributes, class_room_id: class_room.id}
         expect(assigns(:student)).to eq(student)
       end
 
       it "re-renders the 'edit' template" do
         student = Student.create! valid_attributes
-        put :update, params: {id: student.to_param, student: invalid_attributes}
+        put :update, params: {id: student.to_param, student: invalid_attributes, class_room_id: class_room.id}
         expect(response).to render_template("edit")
       end
     end
   end
 
-  describe "DELETE #destroy" do
-    it "destroys the requested student" do
-      student = Student.create! valid_attributes
-      expect {
-        delete :destroy, params: {id: student.to_param}
-      }.to change(Student, :count).by(-1)
-    end
-
-    it "redirects to the students list" do
-      student = Student.create! valid_attributes
-      delete :destroy, params: {id: student.to_param}
-      expect(response).to redirect_to(students_url)
-    end
-  end
 
 end
