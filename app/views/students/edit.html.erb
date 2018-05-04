@@ -2,5 +2,5 @@
 
 <%= render 'form', student: @student %>
 
-<%= link_to 'Show', @student %> |
-<%= link_to 'Back', students_path %>
+<%= link_to 'Show', class_room_student_path(@class_room, @student) %> |
+<%= link_to 'Back', class_room_students_path(@class_room) %>
