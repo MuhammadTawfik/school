@@ -36,15 +36,29 @@ RSpec.describe StudentsController, type: :controller do
 
   describe "GET #index" do
     it "assigns all students as @students" do
-      student = Student.create! valid_attributes
+      student = create :student, valid_attributes
       get :index, params: {class_room_id: class_room.id}
       expect(assigns(:students)).to eq([student])
+    end
+
+    context "http caching" do  
+
+      it "will get status 304 if no changes in the students list" do
+        get :index, params: {class_room_id: class_room.id}
+        expect(response.status).to eq(200)
+        expect(response.headers['ETag']).to be_present
+        expect(response.headers['Last-Modified']).to be_present
+        etag = response.headers['ETag']
+        request.env['HTTP_IF_NONE_MATCH'] = etag
+        get :index, params: {class_room_id: class_room.id}
+        expect(response.status).to eq(304)
+      end
     end
   end
 
   describe "GET #show" do
     it "assigns the requested student as @student" do
-      student = Student.create! valid_attributes
+      student = create :student, valid_attributes
       get :show, params: {id: student.to_param, class_room_id: class_room.id}
       expect(assigns(:student)).to eq(student)
     end
@@ -59,7 +73,7 @@ RSpec.describe StudentsController, type: :controller do
 
   describe "GET #edit" do
     it "assigns the requested student as @student" do
-      student = Student.create! valid_attributes
+      student = create :student, valid_attributes
       get :edit, params: {id: student.to_param, class_room_id: class_room.id}
       expect(assigns(:student)).to eq(student)
     end
@@ -104,20 +118,20 @@ RSpec.describe StudentsController, type: :controller do
       let(:new_attributes) { { name: Faker::Name.name }}
 
       it "updates the requested student" do
-        student = Student.create! valid_attributes
+        student = create :student, valid_attributes
         put :update, params: {id: student.to_param, student: new_attributes, class_room_id: class_room.id}
         student.reload
         expect(assigns(:student)[:name]).to eq(new_attributes[:name])
       end
 
       it "assigns the requested student as @student" do
-        student = Student.create! valid_attributes
+        student = create :student, valid_attributes
         put :update, params: {id: student.to_param, student: valid_attributes, class_room_id: class_room.id}
         expect(assigns(:student)).to eq(student)
       end
 
       it "redirects to the student" do
-        student = Student.create! valid_attributes
+        student = create :student, valid_attributes
         put :update, params: {id: student.to_param, student: valid_attributes, class_room_id: class_room.id}
         expect(response).to redirect_to(class_room_student_url(class_room,student))
       end
@@ -125,13 +139,13 @@ RSpec.describe StudentsController, type: :controller do
 
     context "with invalid params" do
       it "assigns the student as @student" do
-        student = Student.create! valid_attributes
+        student = create :student, valid_attributes
         put :update, params: {id: student.to_param, student: invalid_attributes, class_room_id: class_room.id}
         expect(assigns(:student)).to eq(student)
       end
 
       it "re-renders the 'edit' template" do
-        student = Student.create! valid_attributes
+        student = create :student, valid_attributes
         put :update, params: {id: student.to_param, student: invalid_attributes, class_room_id: class_room.id}
         expect(response).to render_template("edit")
       end

@@ -10,7 +10,7 @@ RSpec.describe Student, type: :model do
   end
 
   context "relations" do 
-    it { is_expected.to belong_to(:class_room) }
+    it { is_expected.to belong_to(:class_room).touch(true) }
   end
 
   context "database structure" do 

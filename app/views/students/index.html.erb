@@ -1,29 +1,30 @@
 <p id="notice"><%= notice %></p>
+<% cache @class_room do %>
+  <h1>Students of class room <%= "#{@class_room.id}"%></h1>
 
-<h1>Students</h1>
-
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Email</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @students.each do |student| %>
+  <table>
+    <thead>
       <tr>
-        <td><%= student.name %></td>
-        <td><%= student.email %></td>
-        <td><%= link_to 'Show', class_room_student_path(@class_room, student) %></td>
-        <td><%= link_to 'Edit', edit_class_room_student_path(@class_room,student) %></td>
+        <th>Name</th>
+        <th>Email</th>
+        <th colspan="3"></th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
 
-<br>
+    <tbody>
+      <% @students.each do |student| %>
+        <tr>
+          <td><%= student.name %></td>
+          <td><%= student.email %></td>
+          <td><%= link_to 'Show', class_room_student_path(@class_room, student) %></td>
+          <td><%= link_to 'Edit', edit_class_room_student_path(@class_room,student) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 
-<%= link_to 'New Student', new_class_room_student_path(@class_room) %>
-<%= link_to 'class_room', @class_room %>
+  <br>
+
+  <%= link_to 'New Student', new_class_room_student_path(@class_room) %>
+  <%= link_to 'class_room', @class_room %>
+<% end %>
